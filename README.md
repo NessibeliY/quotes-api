@@ -9,6 +9,7 @@
 ```bash
 git clone git@github.com:NessibeliY/quotes-api.git
 cd quotes-api
+go mod tidy
 go run .
 ```
 
