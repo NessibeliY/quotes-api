@@ -8,8 +8,16 @@ import (
 	"github.com/NessibeliY/quotes-api/internal/store"
 )
 
+type QuoteService interface {
+	AddQuote(author, quote string) models.Quote
+	GetQuotesByAuthor(author string) []models.Quote
+	GetAllQuotes() []models.Quote
+	GetRandomQuote() (models.Quote, bool)
+	DeleteQuote(id int64) bool
+}
+
 type Service struct {
-	store *store.Store
+	store store.QuoteStore
 	rand  *rand.Rand
 }
 

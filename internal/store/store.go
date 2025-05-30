@@ -6,6 +6,13 @@ import (
 	"github.com/NessibeliY/quotes-api/internal/models"
 )
 
+type QuoteStore interface {
+	AddQuote(author, quote string) models.Quote
+	GetQuotesByAuthor(author string) []models.Quote
+	GetAllQuotes() []models.Quote
+	DeleteQuoteByID(id int64) bool
+}
+
 type Store struct {
 	mu     sync.RWMutex
 	quotes []models.Quote
@@ -22,6 +29,13 @@ func NewStore() *Store {
 func (s *Store) AddQuote(author, quote string) models.Quote {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	for _, q := range s.quotes {
+		if q.Author == author && q.Quote == quote {
+			return q
+		}
+	}
+
 	q := models.Quote{
 		ID:     s.nextID,
 		Author: author,
