@@ -38,7 +38,7 @@ curl http://localhost:8080/quotes/random
 
 4. Фильтрация по автору:
 ```
-curl http://localhost:8080/quotes?author=Confucius
+curl "http://localhost:8080/quotes?author=Confucius"
 ```
 
 5. Удалить цитату:
