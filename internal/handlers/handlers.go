@@ -42,7 +42,11 @@ func (h *Handler) AddQuote(w http.ResponseWriter, r *http.Request) {
 	quote := h.Service.AddQuote(req.Author, req.Quote)
 	slog.Info("add quote", "quote", quote)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quote)
+	if err := json.NewEncoder(w).Encode(quote); err != nil {
+		slog.Warn("encode response", "error", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *Handler) GetAllQuotes(w http.ResponseWriter, r *http.Request) {
@@ -56,10 +60,14 @@ func (h *Handler) GetAllQuotes(w http.ResponseWriter, r *http.Request) {
 		slog.Info("get all quotes", "quotes", quotes)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quotes)
+	if err := json.NewEncoder(w).Encode(quotes); err != nil {
+		slog.Warn("encode response", "error", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
-func (h *Handler) GetRandomQuote(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetRandomQuote(w http.ResponseWriter, _ *http.Request) {
 	quote, ok := h.Service.GetRandomQuote()
 	if !ok {
 		http.Error(w, "no quotes", http.StatusNotFound)
@@ -67,7 +75,11 @@ func (h *Handler) GetRandomQuote(w http.ResponseWriter, r *http.Request) {
 	}
 	slog.Info("get random quote", "quote", quote)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(quote)
+	if err := json.NewEncoder(w).Encode(quote); err != nil {
+		slog.Warn("encode response", "error", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *Handler) DeleteQuote(w http.ResponseWriter, r *http.Request) {
@@ -88,8 +100,12 @@ func (h *Handler) DeleteQuote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Health(w http.ResponseWriter, _ *http.Request) {
 	slog.Info("health check")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("OK"))
+	if _, err := w.Write([]byte("OK")); err != nil {
+		slog.Warn("write response", "error", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 }

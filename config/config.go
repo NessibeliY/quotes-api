@@ -18,14 +18,14 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
-		return nil, fmt.Errorf("open config file: %v", err)
+		return nil, fmt.Errorf("open config file: %w", err)
 	}
 	defer f.Close()
 
 	cfg := &Config{}
 	err = json.NewDecoder(f).Decode(&cfg)
 	if err != nil {
-		return nil, fmt.Errorf("decode file: %v", err)
+		return nil, fmt.Errorf("decode file: %w", err)
 	}
 
 	return cfg, nil

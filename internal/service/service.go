@@ -24,7 +24,7 @@ type Service struct {
 func NewService(store *store.Store) *Service {
 	return &Service{
 		store: store,
-		rand:  rand.New(rand.NewSource(time.Now().UnixNano())),
+		rand:  rand.New(rand.NewSource(time.Now().UnixNano())), //nolint:gosec
 	}
 }
 
@@ -45,7 +45,7 @@ func (s *Service) GetRandomQuote() (models.Quote, bool) {
 	if len(all) == 0 {
 		return models.Quote{}, false
 	}
-	return all[rand.Intn(len(all))], true
+	return all[rand.Intn(len(all))], true //nolint:gosec
 }
 
 func (s *Service) DeleteQuote(id int64) bool {
